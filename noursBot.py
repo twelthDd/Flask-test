@@ -43,7 +43,7 @@ def event(payload):
             try:
                 client.chat_delete(channel=channel_id, ts=ts)
             except Exception as e:
-                //print(e)
+                #print(e)
                 pass
         
         try:

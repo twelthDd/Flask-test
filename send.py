@@ -11,9 +11,12 @@ load_dotenv (dotenv_path=env_path)
 app = Flask(__name__)
 slack_event_adapter = SlackEventAdapter(os.environ['SIGNING_SECRET'],"/slack/events",app)
 client = slack.WebClient(token=os.environ["SLACK_BOT_TOKEN"])
+bot_client = slack.WebClient(token=os.environ['SLACK_BOT_TOKEN'])
+BOT_ID = bot_client.api_call("auth.test")['user_id']
+print (BOT_ID)
 
 #* To post a message via the bot
-client.chat_postMessage(channel='#test', text='Hello World')
+client.chat_postMessage(channel='#announcements', text="The <#C04KARSQMAM|Announcements> channel is now a whitelist channel (or at least should be if my programers were cometent...), currently only team leads are whitelisted if you think that you should be added please message <@U0607TBATL3> and plead your case. For any other comunication perpouses feel free to use the <#C073U8MUTAM|general> channel.")
 
 @slack_event_adapter.on("message")
 def message(payload):

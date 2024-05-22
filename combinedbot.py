@@ -16,8 +16,9 @@ slack_event_adapter = SlackEventAdapter(os.environ["SIGNING_SECRET"], "/slack/ev
 client = slack.WebClient(token=os.environ['SLACK_USER_TOKEN'])
 bot_client = slack.WebClient(token=os.environ['SLACK_BOT_TOKEN'])
 BOT_ID = bot_client.api_call("auth.test")['user_id']
-#* WHITELISTED USERS (Bot) (Nour)
-whitelisted_users = [None]
+
+#* WHITELISTED USERS (Team Leads): (Nour Sabir), (Noah Laforce),(Ms McClung), (Yuqing Zhou), (Amelia Monaghan), (Vera Wolfson), (Michelle Li), (Jiani Luo), (Martin Nguyen), (Camille Massue), (Arthur Marouzé), (Michaela Verardo), (Timur Okhmatovskiy), (Bot)
+whitelisted_users = ["U06031QSBSB","U0607TBATL3", "U04KMTN3JC8", "U04KHFCTMUH", "U04JYH0TXQS", "U060FS0PXGU", "U04KN83QUN4", "U04KB68EULR", "U0603URJGDT", "U04JRURDZSA", "U060L9L613Q", "U060KGX8RA5", "U0600QD62EA", BOT_ID, None]
 
 #* defines a list for the welcome message and message count variables (Noah)
 WelcomeMessages = {}
@@ -102,6 +103,7 @@ def message(payload):
     channel_id = event.get("channel")
     user_id = event.get("user")
     text = event.get("text")
+    print (text)
     timestamp = event.get("ts")
     event_type = event.get("type")
     #* Noah's part of the bot (the bot is still being combined)
@@ -122,7 +124,7 @@ def message(payload):
     
     if len(text) == 1:
         client.chat_delete(channel=channel_id, ts=timestamp)
-    elif not user_id in whitelisted_users and channel_id == "C06C5Q3GF5J":
+    elif not user_id in whitelisted_users and channel_id == "C04KARSQMAM":
         messages_set.add(timestamp)
         for ts in messages_set:
             
