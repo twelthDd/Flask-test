@@ -19,7 +19,7 @@ BOT_ID = bot_client.api_call("auth.test")['user_id']
 
 #* WHITELISTED USERS (Team Leads): (Nour Sabir), (Noah Laforce),(Ms McClung), (Yuqing Zhou), (Amelia Monaghan), (Vera Wolfson), (Michelle Li), (Jiani Luo), (Martin Nguyen), (Camille Massue), (Arthur Marouzé), (Michaela Verardo), (Timur Okhmatovskiy), (Bot)
 whitelisted_users = ["U06031QSBSB","U0607TBATL3", "U04KMTN3JC8", "U04KHFCTMUH", "U04JYH0TXQS", "U060FS0PXGU", "U04KN83QUN4", "U04KB68EULR", "U0603URJGDT", "U04JRURDZSA", "U060L9L613Q", "U060KGX8RA5", "U0600QD62EA", BOT_ID, None]
-
+speakCommandWhitelist = ["U06031QSBSB","U0607TBATL3"]
 #* defines a list for the welcome message and message count variables (Noah)
 WelcomeMessages = {}
 message_counts = {}
@@ -98,7 +98,7 @@ def check_if_bad_words(message):
 
 @slack_event_adapter.on('message')
 def message(payload):
-    print(payload)
+   # print(payload)
     event = payload.get("event", {})
     channel_id = event.get("channel")
     user_id = event.get("user")
@@ -175,6 +175,23 @@ def reaction(payload):
 #     message_count = message_counts.get(user_id, 0)
 #     bot_client.chat_postMessage(channel=channel_id, text=f"Message: {message_count}")
 #     return Response(), 200
+
+@app.route('/speak', methods=['POST'])
+def speak():
+    data = request.form
+    user_id = data.get('user_id')
+    channel_id = data.get('channel_id')
+    text = data.get('text')
+    # print (data)
+    # print(text)
+    # bot_client.chat_postMessage(channel=channel_id, text=text)
+    
+    if user_id in speakCommandWhitelist:
+        bot_client.chat_postMessage(channel=channel_id, text=text)
+        return Response(), 200
+    else: 
+        return Response(), 200
+
 
 
 if __name__ == "__main__":
