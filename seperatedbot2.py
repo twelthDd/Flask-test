@@ -5,6 +5,8 @@ from dotenv import load_dotenv
 from flask import Flask, request, Response
 from slackeventsapi import SlackEventAdapter
 import string
+from speakcommand import speak
+from welcomemessage import WelcomeMessage
 
 #* loads the .env file
 env_path = Path(".") / ".env"
@@ -17,9 +19,10 @@ client = slack.WebClient(token=os.environ['SLACK_USER_TOKEN'])
 bot_client = slack.WebClient(token=os.environ['SLACK_BOT_TOKEN'])
 BOT_ID = bot_client.api_call("auth.test")['user_id']
 
-#* WHITELISTED USERS (Team Leads): (Nour Sabir), (Noah Laforce),(Ms McClung), (Yuqing Zhou), (Amelia Monaghan), (Vera Wolfson), (Michelle Li), (Jiani Luo), (Martin Nguyen), (Camille Massue), (Arthur Marouzé), (Michaela Verardo), (Timur Okhmatovskiy), (Bot)
-whitelisted_users = ["U06031QSBSB","U0607TBATL3", "U04KMTN3JC8", "U04KHFCTMUH", "U04JYH0TXQS", "U060FS0PXGU", "U04KN83QUN4", "U04KB68EULR", "U0603URJGDT", "U04JRURDZSA", "U060L9L613Q", "U060KGX8RA5", "U0600QD62EA", BOT_ID, None]
-speakCommandWhitelist = ["U06031QSBSB","U0607TBATL3"]
+
+whitelisted_users =  ["U06031QSBSB", "U0607TBATL3", "U04KMTN3JC8", "U04KHFCTMUH", "U04JYH0TXQS", "U060FS0PXGU", "U04KN83QUN4", "U04KB68EULR", "U0603URJGDT", "U04JRURDZSA", "U060L9L613Q", "U060KGX8RA5", "U0600QD62EA", BOT_ID, None]
+# speakCommandWhitelist = os.environ['SPEAK_COMMAND_WHITELIST']
+
 #* defines a list for the welcome message and message count variables (Noah)
 WelcomeMessages = {}
 message_counts = {}
@@ -29,49 +32,49 @@ messages_set = set()
 ts_to_delete = set()
 
 #! test bad words list (Noah)
-BAD_WORDS = ['bad', 'stop', 'dumb', 'stupid']
+BAD_WORDS = []
 
-#* class containing the welcome message sent to user when they join the server (Noah)
-class WelcomeMessage:
+# #* class containing the welcome message sent to user when they join the server (Noah)
+# class WelcomeMessage:
     
-    START_TEXT = {
-        'type': 'section',
-        'text': {
-        'type': 'mrkdwn',
-        'text': (
-            'Welcome to this awesome channel! \n\n'
-            '*Get started my completing some tasks*'
-        )}
-    }
-    DIVIDER = {'type': 'divider'}    
-    def __init__(self, channel, user):
-        self.channel = channel
-        self.user = user
-        self.icon_emoji = ':robot_face:'
-        self.timestamp = ''
-        self.completed = False
+#     START_TEXT = {
+#         'type': 'section',
+#         'text': {
+#         'type': 'mrkdwn',
+#         'text': (
+#             'Welcome to this awesome channel! \n\n'
+#             '*Get started my completing some tasks*'
+#         )}
+#     }
+#     DIVIDER = {'type': 'divider'}    
+#     def __init__(self, channel, user):
+#         self.channel = channel
+#         self.user = user
+#         self.icon_emoji = ':robot_face:'
+#         self.timestamp = ''
+#         self.completed = False
         
-    def get_message(self):
-        return {
-            'ts': self.timestamp,
-            'channel': self.channel,
-            'username': 'Welcome Robot!',
-            'icon_emoji': self.icon_emoji,
-            'blocks': [
-                self.START_TEXT,
-                self.DIVIDER,
-                self._get_reaction_task()
-            ]
-        }
+#     def get_message(self):
+#         return {
+#             'ts': self.timestamp,
+#             'channel': self.channel,
+#             'username': 'Welcome Robot!',
+#             'icon_emoji': self.icon_emoji,
+#             'blocks': [
+#                 self.START_TEXT,
+#                 self.DIVIDER,
+#                 self._get_reaction_task()
+#             ]
+#         }
         
-    def _get_reaction_task(self):
-        checkmark = ':white_check_mark:'
-        if not self.completed:
-            checkmark = ':white_large_square:'
+#     def _get_reaction_task(self):
+#         checkmark = ':white_check_mark:'
+#         if not self.completed:
+#             checkmark = ':white_large_square:'
 
-        text = f'{checkmark} *React to this message!*'
+#         text = f'{checkmark} *React to this message!*'
 
-        return {'type': 'section', 'text': {'type': 'mrkdwn', 'text': text}}
+#         return {'type': 'section', 'text': {'type': 'mrkdwn', 'text': text}}
 #* sends the welcome message class to user (Noah)
 def send_welcome_message(channel, user):
 
@@ -98,12 +101,11 @@ def check_if_bad_words(message):
 
 @slack_event_adapter.on('message')
 def message(payload):
-   # print(payload)
+    print(payload)
     event = payload.get("event", {})
     channel_id = event.get("channel")
     user_id = event.get("user")
     text = event.get("text")
-     
     print (text)
     timestamp = event.get("ts")
     event_type = event.get("type")
@@ -178,22 +180,18 @@ def reaction(payload):
 #     return Response(), 200
 
 @app.route('/speak', methods=['POST'])
-def speak():
-    data = request.form
-    user_id = data.get('user_id')
-    channel_id = data.get('channel_id')
-    text = data.get('text')
-    # print (data)
-    # print(text)
-    # bot_client.chat_postMessage(channel=channel_id, text=text)
-    
-    if user_id in speakCommandWhitelist:
-        bot_client.chat_postMessage(channel=channel_id, text=text)
-        return Response(), 200
-    else: 
-        return Response(), 200
+def speakcommand():
+    speak()
+    return Response(), 200
 
+
+
+@app.route('/slack/interactivity', methods=['POST'])
+def interactivity():
+    data = request.form
+    print(data)
+    return Response(), 200
 
 
 if __name__ == "__main__":
-    app.run(debug=True) 
+    app.run(debug=True)

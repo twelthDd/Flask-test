@@ -16,7 +16,7 @@ BOT_ID = bot_client.api_call("auth.test")['user_id']
 print (BOT_ID)
 
 #* To post a message via the bot
-client.chat_postMessage(channel='#announcements', text="The <#C04KARSQMAM|Announcements> channel is now a whitelist channel (or at least should be if my programers were cometent...), currently only team leads are whitelisted if you think that you should be added please message <@U0607TBATL3> and plead your case. For any other comunication perpouses feel free to use the <#C073U8MUTAM|general> channel.")
+client.chat_postMessage(channel='U0607C9UUE6', text="BRING IT!")
 
 @slack_event_adapter.on("message")
 def message(payload):
