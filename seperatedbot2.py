@@ -5,6 +5,7 @@ from dotenv import load_dotenv
 from flask import Flask, request, Response
 from slackeventsapi import SlackEventAdapter
 import string
+import json
 from speakcommand import speak
 from welcomemessage import WelcomeMessage
 
@@ -101,7 +102,7 @@ def check_if_bad_words(message):
 
 @slack_event_adapter.on('message')
 def message(payload):
-    print(payload)
+    # print(payload)
     event = payload.get("event", {})
     channel_id = event.get("channel")
     user_id = event.get("user")
@@ -189,7 +190,14 @@ def speakcommand():
 @app.route('/slack/interactivity', methods=['POST'])
 def interactivity():
     data = request.form
-    print(data)
+    payload = json.loads(data.get('payload'))
+    user_id = payload['user']['id']
+    channel_id = payload['channel']['id']
+    action_id = payload['actions'][0]['action_id']
+    actions = payload['actions']
+    print(user_id)
+    print(actions)
+    print(action_id)
     return Response(), 200
 
 
