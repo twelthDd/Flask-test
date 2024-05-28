@@ -35,47 +35,6 @@ ts_to_delete = set()
 #! test bad words list (Noah)
 BAD_WORDS = []
 
-# #* class containing the welcome message sent to user when they join the server (Noah)
-# class WelcomeMessage:
-    
-#     START_TEXT = {
-#         'type': 'section',
-#         'text': {
-#         'type': 'mrkdwn',
-#         'text': (
-#             'Welcome to this awesome channel! \n\n'
-#             '*Get started my completing some tasks*'
-#         )}
-#     }
-#     DIVIDER = {'type': 'divider'}    
-#     def __init__(self, channel, user):
-#         self.channel = channel
-#         self.user = user
-#         self.icon_emoji = ':robot_face:'
-#         self.timestamp = ''
-#         self.completed = False
-        
-#     def get_message(self):
-#         return {
-#             'ts': self.timestamp,
-#             'channel': self.channel,
-#             'username': 'Welcome Robot!',
-#             'icon_emoji': self.icon_emoji,
-#             'blocks': [
-#                 self.START_TEXT,
-#                 self.DIVIDER,
-#                 self._get_reaction_task()
-#             ]
-#         }
-        
-#     def _get_reaction_task(self):
-#         checkmark = ':white_check_mark:'
-#         if not self.completed:
-#             checkmark = ':white_large_square:'
-
-#         text = f'{checkmark} *React to this message!*'
-
-#         return {'type': 'section', 'text': {'type': 'mrkdwn', 'text': text}}
 #* sends the welcome message class to user (Noah)
 def send_welcome_message(channel, user):
 
@@ -194,10 +153,31 @@ def interactivity():
     user_id = payload['user']['id']
     channel_id = payload['channel']['id']
     action_id = payload['actions'][0]['action_id']
-    actions = payload['actions']
+    actions = payload['actions'][0]
+    actions_value = payload['actions'][0] ['selected_option'] ['value']
     print(user_id)
-    print(actions)
-    print(action_id)
+    # print(actions_value)
+    # print(action_id)
+    if actions_value == "mechanical":
+        # client.channel_invite(channel='C04KARSQMAM', users=user_id, force= false) #invites user to #announcement channel
+        # client.conversations_invite(channel='C073U8MUTAM', users=user_id, force= false) #invites user to #general channel 
+        client.conversations_invite(channel='C060C6E875M', users=user_id) #invites user to #mechanical-subteam channel 
+    elif actions_value == "cad":
+        # client.conversations_invite(channel='C04KARSQMAM', users=user_id, force= false) #invites user to #announcement channel
+        # client.conversations_invite(channel='C073U8MUTAM', users=user_id, force= false) #invites user to #general channel
+        client.conversations_invite(channel='C060C92R37H', users=user_id) #invites user to #mechanical-cad-subteam channel 
+    elif actions_value == "programming":
+        # client.conversations_invite(channel='C04KARSQMAM', users=user_id) #invites user to #announcement channel
+        # client.conversations_invite(channel='C073U8MUTAM', users=user_id) #invites user to #general channel
+        client.conversations_invite(channel='C060C5BTE4X', users=user_id) #invites user to #programming-sub-team channel
+    elif actions_value == "electrical":
+        # client.conversations_invite(channel='C04KARSQMAM', users=user_id) #invites user to #announcement channel
+        # client.conversations_invite(channel='C073U8MUTAM', users=user_id) #invites user to #general channel
+        client.conversations_invite(channel='C04JK5YC20P', users=user_id) #invites user to #electrical channel
+    elif actions_value == "media":
+        # client.conversations_invite(channel='C04KARSQMAM', users=user_id) #invites user to #announcement channel
+        # client.conversations_invite(channel='C073U8MUTAM', users=user_id) #invites user to #general channel
+        client.conversations_invite(channel='C060L2JGG6S', users=user_id) #invites user to #communication-subteam channel
     return Response(), 200
 
 

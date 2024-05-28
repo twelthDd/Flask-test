@@ -10,6 +10,7 @@ class WelcomeMessage:
            ' Hey there, rookie or veteran, I am your friendly neighborhood robotics bot! \n\n '
            'To get started and join your subteam channels, Please select which subteam you would like to join: \n\n'
            ":gear: Mechanical Team - for building and maintaining the robot's mechanisms \n"
+           ':triangular_ruler: CAD Team - designes the robot at the beguining of each game with the help of cad (computer aided design) \n'
            ":computer: Programming Team - for coding and controlling the robot's brain \n"
            ":electric_plug: Electrical Team - for wiring, power distribution, and electrical systems \n"
            ":camera: Media/communications Team - for social media and sponsorship primarily \n\n"
@@ -47,7 +48,7 @@ class WelcomeMessage:
             'text': text
             },
             'accessory': {
-            'type': 'multi_static_select',
+            'type': 'static_select',
             'placeholder': {
                 'type': 'plain_text',
                 'text': 'Select a subteam channel'
@@ -58,7 +59,14 @@ class WelcomeMessage:
                     'type': 'plain_text',
                     'text': 'mechanical Team'
                 },
-                'value': 'mechanisms'
+                'value': 'mechanical'
+                },
+                {
+                'text': {
+                    'type': 'plain_text',
+                    'text': 'CAD Team'
+                },
+                'value': 'cad'
                 },
                 {
                 'text': {
